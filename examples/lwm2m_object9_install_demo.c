@@ -96,8 +96,6 @@ static void print_status(const object9_instance_t *obj9, const char *step)
 
 static int write_package_uri(object9_instance_t *obj9, const char *uri)
 {
-    size_t required_size;
-
     if (uri == NULL ||
         (strncmp(uri, "http://", 7) != 0 && strncmp(uri, "https://", 8) != 0)) {
         obj9->update_result = UPDATE_RESULT_INVALID_URI;
@@ -110,7 +108,8 @@ static int write_package_uri(object9_instance_t *obj9, const char *uri)
     print_status(obj9, "download_started");
 
     /* Mock download completion */
-    required_size = strlen(PACKAGE_DATA_PREFIX) + strlen(obj9->package_uri) + 1;
+    size_t required_size = strlen(PACKAGE_DATA_PREFIX) + strlen(obj9->package_uri) + 1;
+
     if (required_size > sizeof(obj9->package_data)) {
         obj9->update_result = UPDATE_RESULT_NOT_ENOUGH_SPACE;
         return -1;
