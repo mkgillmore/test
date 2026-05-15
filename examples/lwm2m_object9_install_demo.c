@@ -33,6 +33,7 @@ typedef enum {
 
 #define PACKAGE_URI_MAX_SIZE 256
 #define PACKAGE_DATA_MAX_SIZE 320
+#define PACKAGE_DATA_PREFIX "downloaded-bytes-from:"
 
 typedef struct {
     char package_uri[PACKAGE_URI_MAX_SIZE];
@@ -95,8 +96,6 @@ static void print_status(const object9_instance_t *obj9, const char *step)
 
 static int write_package_uri(object9_instance_t *obj9, const char *uri)
 {
-    const char prefix[] = "downloaded-bytes-from:";
-
     if (uri == NULL || strncmp(uri, "http://", 7) != 0) {
         obj9->update_result = UPDATE_RESULT_INVALID_URI;
         return -1;
@@ -108,13 +107,14 @@ static int write_package_uri(object9_instance_t *obj9, const char *uri)
     print_status(obj9, "download_started");
 
     /* Mock download completion */
-    if (strlen(obj9->package_uri) + strlen(prefix) >= sizeof(obj9->package_data)) {
+    if (strlen(obj9->package_uri) + strlen(PACKAGE_DATA_PREFIX) + 1 >
+        sizeof(obj9->package_data)) {
         obj9->update_result = UPDATE_RESULT_NOT_ENOUGH_SPACE;
         return -1;
     }
 
     snprintf(obj9->package_data, sizeof(obj9->package_data),
-             "%s%s", prefix, obj9->package_uri);
+             "%s%s", PACKAGE_DATA_PREFIX, obj9->package_uri);
     obj9->update_state = UPDATE_STATE_DOWNLOADED;
     obj9->update_result = UPDATE_RESULT_INITIAL;
     print_status(obj9, "download_completed");
@@ -131,7 +131,7 @@ static int execute_install(object9_instance_t *obj9)
     /* In a real client this is where package verification and installation occurs. */
     obj9->update_state = UPDATE_STATE_DELIVERED;
 
-    if (strstr(obj9->package_data, "downloaded-bytes-from:") == NULL) {
+    if (strstr(obj9->package_data, PACKAGE_DATA_PREFIX) == NULL) {
         obj9->update_result = UPDATE_RESULT_INTEGRITY_FAILURE;
         return -1;
     }
