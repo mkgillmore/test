@@ -31,9 +31,12 @@ typedef enum {
     UPDATE_RESULT_INSTALL_FAILURE = 58
 } update_result_t;
 
+#define PACKAGE_URI_MAX_SIZE 256
+#define PACKAGE_DATA_MAX_SIZE 320
+
 typedef struct {
-    char package_uri[256];
-    char package_data[320];
+    char package_uri[PACKAGE_URI_MAX_SIZE];
+    char package_data[PACKAGE_DATA_MAX_SIZE];
     update_state_t update_state;
     update_result_t update_result;
 } object9_instance_t;
@@ -141,8 +144,6 @@ static int execute_install(object9_instance_t *obj9)
 int main(void)
 {
     object9_instance_t obj9 = {
-        .package_uri = "",
-        .package_data = "",
         .update_state = UPDATE_STATE_INITIAL,
         .update_result = UPDATE_RESULT_INITIAL,
     };
