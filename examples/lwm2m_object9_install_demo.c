@@ -96,6 +96,8 @@ static void print_status(const object9_instance_t *obj9, const char *step)
 
 static int write_package_uri(object9_instance_t *obj9, const char *uri)
 {
+    size_t prefix_len = sizeof(PACKAGE_DATA_PREFIX) - 1;
+
     if (uri == NULL ||
         (strncmp(uri, "http://", 7) != 0 && strncmp(uri, "https://", 8) != 0)) {
         obj9->update_result = UPDATE_RESULT_INVALID_URI;
@@ -108,7 +110,8 @@ static int write_package_uri(object9_instance_t *obj9, const char *uri)
     print_status(obj9, "download_started");
 
     /* Mock download completion */
-    size_t required_size = strlen(PACKAGE_DATA_PREFIX) + strlen(obj9->package_uri) + 1;
+    size_t uri_len = strlen(obj9->package_uri);
+    size_t required_size = prefix_len + uri_len + 1;
 
     if (required_size > sizeof(obj9->package_data)) {
         obj9->update_result = UPDATE_RESULT_NOT_ENOUGH_SPACE;
@@ -133,6 +136,7 @@ static int execute_install(object9_instance_t *obj9)
     /* In a real client this is where package verification and installation occurs. */
     obj9->update_state = UPDATE_STATE_DELIVERED;
 
+    /* Demo-only integrity check: real clients should verify checksum/signature. */
     if (strstr(obj9->package_data, PACKAGE_DATA_PREFIX) == NULL) {
         obj9->update_result = UPDATE_RESULT_INTEGRITY_FAILURE;
         return -1;
