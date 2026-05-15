@@ -13,12 +13,12 @@ Object 9 (Software Management) install flow:
 
 Example source:
 
-- `/home/runner/work/test/test/examples/lwm2m_object9_install_demo.c`
+- `examples/lwm2m_object9_install_demo.c`
 
 Build and run:
 
 ```bash
-cd /home/runner/work/test/test
+cd <repo-root>
 cc -std=c11 -Wall -Wextra -pedantic -o lwm2m_object9_demo examples/lwm2m_object9_install_demo.c
 ./lwm2m_object9_demo
 ```
